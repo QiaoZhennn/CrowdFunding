@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.atcrowdfunding.manager.dao.RoleDao">
+    <select id="listAll" resultType="role">
+        SELECT id,name
+        FROM t_role
+        <where>
+            <if test="queryText!=null">
+                AND name LIKE concat('%',#{queryText},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getTotalCount" resultType="int">
+        SELECT count(*)
+        FROM t_role
+        <where>
+            <if test="queryText!=null">
+                AND name LIKE concat('%',#{queryText},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getRoleById" resultType="role">
+        SELECT id,name
+            FROM t_role
+        WHERE id=#{id}
+    </select>
+
+    <insert id="insertRole">
+        INSERT INTO
+        t_role(name)
+        VALUE (#{name})
+    </insert>
+    
+    <insert id="insertRolePermissions">
+        INSERT INTO t_role_permission(roleid, permissionid) VALUES
+            <foreach collection="permissionIds" item="permissionId" separator=",">
+                (#{roleId},#{permissionId})
+            </foreach>
+    </insert>
+
+    <update id="editRole">
+        UPDATE t_role
+        SET name=#{name}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteRole">
+        DELETE
+        FROM t_role
+        WHERE id=#{id}
+    </delete>
+
+    <delete id="deleteRolePermissions">
+        DELETE
+        FROM t_role_permission
+        WHERE t_role_permission.roleid=#{roleId}
+    </delete>
+</mapper>

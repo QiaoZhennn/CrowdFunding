@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.atcrowdfunding.manager.dao.PermissionDao">
+    <select id="queryRootNode" resultType="permission">
+        SELECT id,name,pid,icon,url
+            FROM t_permission
+        WHERE pid IS NULL
+    </select>
+    <select id="queryChildNodeByPid" resultType="permission">
+        SELECT id,name,pid,icon,url
+        FROM t_permission
+        WHERE pid = #{pId}
+    </select>
+    <select id="queryAll" resultType="permission">
+        SELECT id,name,pid,icon,url
+        FROM t_permission
+    </select>
+
+    <select id="queryPermissionById" resultType="permission">
+        SELECT id,name,pid,icon,url
+        FROM t_permission
+        WHERE id=#{id}
+    </select>
+
+    <select id="queryPermissionIdsByRoleId" resultType="int">
+        SELECT permissionid
+            FROM t_role_permission
+        WHERE roleid=#{roleId}
+    </select>
+
+    <insert id="insertPermission">
+        INSERT INTO
+            t_permission(name,pid,url)
+                VALUE (#{name},#{pid},#{url})
+    </insert>
+
+    <update id="updatePermission">
+        UPDATE t_permission
+        SET name=#{name},pid=#{pid},icon=#{icon},url=#{url}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deletePermissionById">
+        DELETE
+        FROM t_permission
+        WHERE id=#{id}
+    </delete>
+
+    <delete id="deleteEntireNode">
+        DELETE
+        FROM t_permission
+        WHERE id IN
+        <foreach collection="list" item="deleteId" open="(" close=")" separator=",">
+            #{deleteId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.atcrowdfunding.manager.dao.CertDao">
+    <select id="getCerts" resultType="cert">
+        SELECT id,name
+            FROM t_cert
+    </select>
+
+    <select id="getCertById" resultType="cert">
+        SELECT id,name
+        FROM t_cert
+        WHERE id=#{id}
+    </select>
+
+    <select id="queryAccttypeCerts" resultType="java.util.HashMap">
+        SELECT *
+        FROM t_account_type_cert
+    </select>
+
+    <insert id="insertCert">
+        INSERT INTO
+        t_cert(name)
+                VALUE (#{name})
+    </insert>
+
+    <insert id="insertAccttypeCert">
+        INSERT INTO
+        t_account_type_cert(accttype, certid)
+                VALUE (#{accttype},#{certid})
+    </insert>
+
+    <update id="updateCert">
+        UPDATE
+        t_cert
+        SET name=#{name}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteAccttypeCert">
+        DELETE
+        FROM t_account_type_cert
+        WHERE accttype=#{accttype} AND certid=#{certid}
+    </delete>
+</mapper>

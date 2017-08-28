@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.atcrowdfunding.portal.dao.MemberDao">
+    <select id="queryMemberForLogin" resultType="member">
+        SELECT *
+        FROM t_member
+        WHERE loginacct=#{loginacct}
+    </select>
+    <select id="queryTicket" resultType="ticket">
+        SELECT *
+        FROM t_ticket
+        WHERE memberid=#{id} AND status='0'
+    </select>
+
+    <select id="queryCertsByAccttype" resultType="cert">
+        SELECT *
+        FROM t_cert
+        WHERE id IN (
+            SELECT certid
+            FROM t_account_type_cert
+            WHERE accttype=#{accttype}
+        )
+    </select>
+
+    <select id="queryMemberByTickerPiid" resultType="member">
+        SELECT *
+        FROM t_member
+        WHERE id=(
+            SELECT memberid
+                FROM t_ticket
+            WHERE piid=#{piid}
+        )
+    </select>
+
+    <select id="queryMemberCertsByMemberId" resultType="memberCert">
+        SELECT a.*,b.name AS certname
+        FROM t_member_cert a
+        JOIN t_cert b ON a.certid=b.id
+        WHERE memberid=#{memberId}
+    </select>
+
+    <select id="queryById" resultType="member">
+        SELECT *
+        FROM t_member
+        WHERE id=#{memberId}
+    </select>
+
+    <select id="queryMembersByLoginAccount" resultType="member">
+        SELECT *
+        FROM t_member
+        WHERE loginacct=#{loginAccount}
+    </select>
+
+    <insert id="insertTicket">
+        INSERT INTO
+        t_ticket(memberid, piid, status)
+            VALUE (#{memberid},#{piid},#{status})
+
+    </insert>
+    <insert id="insertMemberCerts">
+        INSERT INTO t_member_cert (memberid, certid, iconpath)
+                VALUES
+                    <foreach collection="memberCerts" item="mc" separator=",">
+                        (#{mc.memberid},#{mc.certid},#{mc.iconpath})
+                    </foreach>
+
+    </insert>
+    <insert id="insertMember">
+        INSERT INTO t_member(loginacct, memberpswd, membername, email,type)
+                VALUE (#{loginacct},#{memberpswd},#{membername},#{email},#{type})
+    </insert>
+    <update id="updateAccttype">
+        UPDATE t_member
+        SET accttype=#{accttype}
+        WHERE id=#{id}
+    </update>
+    <update id="updateBasicInfo">
+        UPDATE t_member
+        SET realname=#{realname},cardnum=#{cardnum}
+        WHERE id=#{id}
+    </update>
+    <update id="updateEmail">
+        UPDATE t_member
+        SET email=#{email}
+        WHERE id=#{id}
+    </update>
+    <update id="updateAuthcode">
+        UPDATE t_ticket
+        SET authcode=#{authcode}
+        WHERE id=#{id}
+    </update>
+    <update id="updateAuthstatus">
+        UPDATE t_member
+        SET authstatus=#{authstatus}
+        WHERE id=#{id}
+    </update>
+    <update id="updateTicketStatus">
+        UPDATE t_ticket
+        SET status=#{status}
+        WHERE id=#{id}
+    </update>
+</mapper>
